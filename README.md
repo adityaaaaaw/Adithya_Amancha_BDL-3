@@ -1,348 +1,337 @@
-# BDF Lab 3 – REST API, Query Parameters, Validation & Debugging
+# Backend Development Fundamentals – Lab 3
 
-> **Backend Development Fundamentals | Node.js + Express + SQLite**
+## REST API with Query Parameters, Validation, and CRUD Operations
 
-A fully functional REST API for a **Book Store**, built as part of the BDF Lab 3 assignment. It demonstrates RESTful design, query parameters, input validation, proper HTTP status codes, and SQLite database integration.
+### Student Details
+
+- **Name:** Aditya Amancha
+- **Section:** AI/DE-2A
+- **Course:** Backend Development Fundamentals
+- **Lab:** 3
 
 ---
 
-## 📋 Features
+## Live Deployment
 
-| Feature | Details |
+**Render URL:** https://adithya-amancha-bdl-3.onrender.com
+
+---
+
+## Project Overview
+
+This project implements a RESTful API for managing a collection of books using Node.js, Express.js, and SQLite.
+
+The API supports CRUD operations (Create, Read, Update, and Delete), along with query parameters for searching, sorting, filtering, and pagination. It also includes input validation and appropriate HTTP status codes for handling invalid requests.
+
+---
+
+## Technologies Used
+
+- Node.js
+- Express.js
+- SQLite
+- SQLite3
+- JavaScript
+- Postman
+- Render
+
+---
+
+## Features
+
+- Retrieve all books
+- Retrieve a specific book by ID
+- Search books using query parameters
+- Sort books based on supported fields
+- Filter books by price
+- Implement pagination using limit and offset
+- Create new books
+- Update existing books
+- Delete books
+- Validate request data
+- Handle missing and invalid inputs
+- Use parameterized SQL queries
+- Deploy the API using Render
+
+---
+
+## API Endpoints
+
+### 1. Get All Books
+
+**Method:** `GET`
+
+```http
+GET /books/
+```
+
+Retrieves all books stored in the database.
+
+### 2. Search Books
+
+**Method:** `GET`
+
+```http
+GET /books/?search=Harry
+```
+
+Searches for books based on the provided search query.
+
+### 3. Sort Books
+
+**Method:** `GET`
+
+```http
+GET /books/?sort_by=price&order=asc
+```
+
+Sorts books based on the selected field and order.
+
+### 4. Pagination
+
+**Method:** `GET`
+
+```http
+GET /books/?limit=5&offset=0
+```
+
+- `limit`: Number of books to retrieve.
+- `offset`: Number of records to skip.
+
+### 5. Filter Books by Price
+
+**Method:** `GET`
+
+```http
+GET /books/?min_price=100&max_price=500
+```
+
+Retrieves books within the specified price range.
+
+### 6. Get Book by ID
+
+**Method:** `GET`
+
+```http
+GET /books/:id/
+```
+
+Retrieves details of a specific book using its ID.
+
+### 7. Create a Book
+
+**Method:** `POST`
+
+```http
+POST /books/
+```
+
+Example request body:
+
+```json
+{
+  "title": "Sample Book",
+  "author": "Sample Author",
+  "price": 250
+}
+```
+
+Creates a new book record in the database.
+
+### 8. Update a Book
+
+**Method:** `PUT`
+
+```http
+PUT /books/:id/
+```
+
+Example request body:
+
+```json
+{
+  "title": "Updated Book",
+  "author": "Updated Author",
+  "price": 300
+}
+```
+
+Updates the details of an existing book.
+
+### 9. Delete a Book
+
+**Method:** `DELETE`
+
+```http
+DELETE /books/:id/
+```
+
+Deletes a book record using its ID.
+
+---
+
+## Input Validation
+
+The API validates incoming data before processing requests.
+
+Validation includes:
+
+- Checking whether the title is provided.
+- Checking whether the author is provided.
+- Checking whether the price is provided and valid.
+- Handling missing required fields.
+- Returning appropriate error responses for invalid data.
+
+### Validation Test Cases
+
+| Test Case | Expected Status |
 |---|---|
-| REST API | Full CRUD for books (GET, POST, PUT, DELETE) |
-| Query Parameters | Search, sort, paginate, and filter by price |
-| Input Validation | Returns 400 with clear error messages |
-| HTTP Status Codes | 200, 201, 400, 404, 500 used correctly |
-| Database | SQLite with 10 pre-seeded books |
-| Error Handling | Try/catch on all routes, graceful shutdown |
-| Testing | Automated test script covering all scenarios |
+| Missing title | 400 Bad Request |
+| Missing author | 400 Bad Request |
+| Invalid price | 400 Bad Request |
 
 ---
 
-## 🗂️ Project Structure
+## Database
 
-```
+The project uses SQLite to store book records.
+
+The database contains a `books` table with the following fields:
+
+| Field | Description |
+|---|---|
+| `id` | Unique identifier for each book |
+| `title` | Title of the book |
+| `author` | Author of the book |
+| `price` | Price of the book |
+
+Parameterized SQL queries are used to help prevent SQL injection.
+
+---
+
+## Project Structure
+
+```text
 bdf-lab3/
-├── app.js          ← Main server (Express + SQLite routes)
-├── setupDb.js      ← Creates and seeds the database
-├── bookStore.db    ← SQLite database (auto-created)
-├── package.json    ← Project metadata and dependencies
-├── test-apis.js    ← Automated API tests
-└── README.md       ← This file
+│
+├── app.js
+├── bookStore.db
+├── package.json
+├── package-lock.json
+├── README.md
+├── setupDb.js
+│
+└── screenshots/
+    ├── GET_All_Books.png
+    ├── GET_Search_Books.png
+    ├── GET_Sort_Books.png
+    ├── GET_Limit_Offset.png
+    ├── GET_Price_Filter.png
+    ├── POST_Create_Book.png
+    ├── PUT_Update_Book.png
+    ├── DELETE_Book.png
+    ├── POST_Missing_Title_400.png
+    ├── POST_Missing_Author_400.png
+    └── POST_Invalid_Price_400.png
 ```
 
 ---
 
-## ⚙️ Installation
+## Installation and Setup
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) v16 or above
-- npm (comes with Node.js)
-
-### Steps
+### 1. Clone the Repository
 
 ```bash
-# 1. Navigate into the project folder
-cd bdf-lab3
+git clone https://github.com/adityaaaaaw/Adithya_Amancha_BDL-3.git
+```
 
-# 2. Install dependencies
+### 2. Navigate to the Project Directory
+
+```bash
+cd Adithya_Amancha_BDL-3
+```
+
+### 3. Install Dependencies
+
+```bash
 npm install
+```
 
-# 3. Set up the database (run once)
-node setupDb.js
+### 4. Start the Server
 
-# 4. Start the server
+```bash
 node app.js
 ```
 
-The server will start at **http://localhost:3000**
+The server will run on:
 
----
-
-## 🚀 How to Run
-
-```bash
-# Start the server
-node app.js
-
-# In a separate terminal, run the automated tests
-node test-apis.js
+```text
+http://localhost:3000
 ```
 
 ---
 
-## 🔗 API Endpoints
+## Screenshots
 
-### Base URL: `http://localhost:3000`
+The following screenshots demonstrate the API functionality and validation.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/books` | Get all books (supports filters) |
-| GET | `/books/:id` | Get a single book by ID |
-| POST | `/books` | Add a new book |
-| PUT | `/books/:id` | Update an existing book |
-| DELETE | `/books/:id` | Delete a book |
+### GET – All Books
 
----
+![GET All Books](screenshots/GET_All_Books.png)
 
-### GET /books – Query Parameters
+### GET – Search Books
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `search_q` | string | — | Partial title search (SQL LIKE) |
-| `order_by` | string | `id` | Sort field: `title`, `author`, `price`, `id` |
-| `order` | string | `ASC` | Sort direction: `ASC` or `DESC` |
-| `limit` | number | `10` | Number of results to return |
-| `offset` | number | `0` | Number of results to skip |
-| `min_price` | number | — | Minimum price filter |
-| `max_price` | number | — | Maximum price filter |
+![GET Search Books](screenshots/GET_Search_Books.png)
 
----
+### GET – Sort Books
 
-## 🔎 Query Parameter Examples
+![GET Sort Books](screenshots/GET_Sort_Books.png)
 
-```bash
-# Get all books
-GET /books
+### GET – Limit and Offset
 
-# Search by title
-GET /books?search_q=harry
+![GET Limit Offset](screenshots/GET_Limit_Offset.png)
 
-# Sort by price (ascending)
-GET /books?order_by=price&order=ASC
+### GET – Price Filter
 
-# Sort by price (descending)
-GET /books?order_by=price&order=DESC
+![GET Price Filter](screenshots/GET_Price_Filter.png)
 
-# Pagination – page 1 (first 3 books)
-GET /books?limit=3&offset=0
+### POST – Create Book
 
-# Pagination – page 2 (next 3 books)
-GET /books?limit=3&offset=3
+![POST Create Book](screenshots/POST_Create_Book.png)
 
-# Price filter – books between ₹300 and ₹700
-GET /books?min_price=300&max_price=700
+### PUT – Update Book
 
-# Combined – search + sort + pagination
-GET /books?search_q=the&order_by=price&order=ASC&limit=5&offset=0
-```
+![PUT Update Book](screenshots/PUT_Update_Book.png)
+
+### DELETE – Delete Book
+
+![DELETE Book](screenshots/DELETE_Book.png)
+
+### Validation – Missing Title
+
+![Missing Title](screenshots/POST_Missing_Title_400.png)
+
+### Validation – Missing Author
+
+![Missing Author](screenshots/POST_Missing_Author_400.png)
+
+### Validation – Invalid Price
+
+![Invalid Price](screenshots/POST_Invalid_Price_400.png)
 
 ---
 
-## 📬 Postman Testing Guide
+## Deployment
 
-### Setup
-1. Open Postman
-2. Create a new **Collection** named `BDF Lab 3`
-3. Set the base URL variable to `http://localhost:3000`
+The application is deployed on Render.
 
----
-
-### 1. GET All Books
-
-| Field | Value |
-|-------|-------|
-| Method | `GET` |
-| URL | `http://localhost:3000/books` |
-
-**Expected Response (200 OK):**
-```json
-{
-  "total": 10,
-  "limit": 10,
-  "offset": 0,
-  "books": [ ... ]
-}
-```
-
-📸 *Screenshot placeholder – GET all books*
-> ![GET All Books](screenshots/get-all-books.png)
+**Live API:** https://adithya-amancha-bdl-3.onrender.com
 
 ---
 
-### 2. GET Single Book
+## Conclusion
 
-| Field | Value |
-|-------|-------|
-| Method | `GET` |
-| URL | `http://localhost:3000/books/1` |
+This lab helped in understanding the development of RESTful APIs using Node.js and Express.js. It provided practical experience in implementing CRUD operations, handling query parameters, applying search and sorting functionality, and managing pagination and price filtering.
 
-**Expected Response (200 OK):**
-```json
-{
-  "id": 1,
-  "title": "The Great Gatsby",
-  "author": "F. Scott Fitzgerald",
-  "price": 299.99
-}
-```
+The lab also demonstrated the importance of input validation, error handling, and parameterized SQL queries while developing backend applications. The API was deployed using Render, providing experience in making backend services accessible online.
 
-📸 *Screenshot placeholder – GET single book*
-> ![GET Single Book](screenshots/get-single-book.png)
-
----
-
-### 3. POST – Add a New Book
-
-| Field | Value |
-|-------|-------|
-| Method | `POST` |
-| URL | `http://localhost:3000/books` |
-| Body | `raw` → `JSON` |
-
-**Request Body:**
-```json
-{
-  "title": "Node.js Design Patterns",
-  "author": "Mario Casciaro",
-  "price": 549.99
-}
-```
-
-**Expected Response (201 Created):**
-```json
-{
-  "message": "Book added successfully.",
-  "book": {
-    "id": 11,
-    "title": "Node.js Design Patterns",
-    "author": "Mario Casciaro",
-    "price": 549.99
-  }
-}
-```
-
-📸 *Screenshot placeholder – POST book*
-> ![POST Book](screenshots/post-book.png)
-
----
-
-### 4. PUT – Update a Book
-
-| Field | Value |
-|-------|-------|
-| Method | `PUT` |
-| URL | `http://localhost:3000/books/1` |
-| Body | `raw` → `JSON` |
-
-**Request Body (partial update is supported):**
-```json
-{
-  "price": 349.99
-}
-```
-
-**Expected Response (200 OK):**
-```json
-{
-  "message": "Book updated successfully.",
-  "book": {
-    "id": 1,
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "price": 349.99
-  }
-}
-```
-
-📸 *Screenshot placeholder – PUT book*
-> ![PUT Book](screenshots/put-book.png)
-
----
-
-### 5. DELETE – Remove a Book
-
-| Field | Value |
-|-------|-------|
-| Method | `DELETE` |
-| URL | `http://localhost:3000/books/1` |
-
-**Expected Response (200 OK):**
-```json
-{
-  "message": "Book with id 1 deleted successfully.",
-  "deletedBook": {
-    "id": 1,
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "price": 299.99
-  }
-}
-```
-
-📸 *Screenshot placeholder – DELETE book*
-> ![DELETE Book](screenshots/delete-book.png)
-
----
-
-### 6. Validation – Missing Title (400)
-
-```json
-POST /books
-Body: { "author": "Someone", "price": 199 }
-
-Response 400:
-{ "error": "Title is required." }
-```
-
-### 7. Validation – Non-numeric Price (400)
-
-```json
-POST /books
-Body: { "title": "X", "author": "Y", "price": "cheap" }
-
-Response 400:
-{ "error": "Price must be a valid number." }
-```
-
-### 8. Book Not Found (404)
-
-```
-GET /books/9999  →  404
-{ "error": "Book with id 9999 not found." }
-```
-
----
-
-### 📸 Database View
-
-📸 *Screenshot placeholder – Database view in DB Browser for SQLite*
-> ![Database View](screenshots/database-view.png)
-
-You can open `bookStore.db` with [DB Browser for SQLite](https://sqlitebrowser.org/) to visually inspect the data.
-
----
-
-## 📊 HTTP Status Code Summary
-
-| Code | Meaning | When Used |
-|------|---------|-----------|
-| 200 | OK | Successful GET, PUT, DELETE |
-| 201 | Created | Successful POST |
-| 400 | Bad Request | Invalid input / missing fields |
-| 404 | Not Found | Book ID doesn't exist |
-| 500 | Internal Server Error | Unexpected server error |
-
----
-
-## 🛠️ Tech Stack
-
-- **Runtime:** Node.js
-- **Framework:** Express.js v4
-- **Database:** SQLite (via `sqlite3` package)
-- **Testing:** Custom Node.js test script
-- **API Testing Tool:** Postman
-
----
-
-## 📝 Notes
-
-- Do **not** commit `node_modules/` to GitHub. It is listed in `.gitignore`.
-- Do **not** commit `.env` files if you add them later.
-- The `bookStore.db` file is auto-created when you run `node setupDb.js`.
-- Port defaults to `3000`. Set `PORT` environment variable to override.
-
----
-
-*BDF Lab 3 | Backend Development Fundamentals*
