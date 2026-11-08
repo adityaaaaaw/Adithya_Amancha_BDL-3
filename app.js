@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 // Parse incoming JSON bodies
 app.use(express.json());
 
-// Open the SQLite database
+// Open the SQLite database (created automatically if it does not exist)
 const DB_PATH = path.join(__dirname, "bookStore.db");
 const db = new sqlite3.Database(DB_PATH, (err) => {
   if (err) {
@@ -23,6 +23,45 @@ const db = new sqlite3.Database(DB_PATH, (err) => {
     process.exit(1);
   }
   console.log("✅ Connected to SQLite database:", DB_PATH);
+
+  // Create the books table if it doesn't exist yet (safe for Render cold starts)
+  db.run(
+    `CREATE TABLE IF NOT EXISTS books (
+      id     INTEGER PRIMARY KEY AUTOINCREMENT,
+      title  TEXT    NOT NULL,
+      author TEXT    NOT NULL,
+      price  REAL    NOT NULL
+    )`,
+    (createErr) => {
+      if (createErr) {
+        console.error("❌ Error creating books table:", createErr.message);
+        return;
+      }
+      // Seed only when the table is empty
+      db.get("SELECT COUNT(*) AS count FROM books", [], (countErr, row) => {
+        if (countErr) return;
+        if (row.count === 0) {
+          const seeds = [
+            ["The Great Gatsby",                      "F. Scott Fitzgerald", 299.99],
+            ["To Kill a Mockingbird",                 "Harper Lee",          349.00],
+            ["1984",                                  "George Orwell",       199.50],
+            ["Harry Potter and the Sorcerer's Stone", "J.K. Rowling",        499.00],
+            ["The Alchemist",                         "Paulo Coelho",        249.00],
+            ["Clean Code",                            "Robert C. Martin",    699.00],
+            ["The Pragmatic Programmer",              "Andrew Hunt",         749.00],
+            ["Introduction to Algorithms",            "Thomas H. Cormen",    999.00],
+            ["Atomic Habits",                         "James Clear",         399.00],
+            ["Deep Work",                             "Cal Newport",         349.00],
+          ];
+          const stmt = db.prepare("INSERT INTO books (title, author, price) VALUES (?, ?, ?)");
+          seeds.forEach(([t, a, p]) => stmt.run(t, a, p));
+          stmt.finalize(() => console.log("✅ Database seeded with 10 sample books."));
+        } else {
+          console.log(`ℹ️  Database already has ${row.count} book(s) – skipping seed.`);
+        }
+      });
+    }
+  );
 });
 
 // ─────────────────────────────────────────────
@@ -64,6 +103,22 @@ function dbAll(sql, params = []) {
 // ─────────────────────────────────────────────
 //  ROUTES
 // ─────────────────────────────────────────────
+
+// ── GET / ───────────────────────────────────
+// Health-check / welcome route (fixes Render root-URL 404)
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Book Store API is running!",
+    version: "1.0.0",
+    endpoints: {
+      "GET /books":        "Get all books (supports search_q, order_by, order, limit, offset, min_price, max_price)",
+      "GET /books/:id":    "Get a single book by ID",
+      "POST /books":       "Add a new book",
+      "PUT /books/:id":    "Update a book",
+      "DELETE /books/:id": "Delete a book",
+    },
+  });
+});
 
 // ── GET /books ──────────────────────────────
 // Supports: search_q, order_by, order, limit, offset, min_price, max_price
